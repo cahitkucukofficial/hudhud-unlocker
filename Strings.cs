@@ -70,6 +70,7 @@ public static class Strings
         ["TrialCode"] = new[] { "Kayıt Kodu Gir...", "Enter Code...", "Code eingeben...", "Saisir le code...", "Introducir código...", "Inserisci codice..." },
         ["TrialClose"] = new[] { "Kapat", "Close", "Schließen", "Fermer", "Cerrar", "Chiudi" },
         ["BuyNow"] = new[] { "Şimdi Satın Al", "Buy Now", "Jetzt kaufen", "Acheter maintenant", "Comprar ahora", "Acquista ora" },
+        ["UpdateAvailable"] = new[] { "🔔 Güncelleme mevcut: v{0} — indirmek için tıklayın", "🔔 Update available: v{0} — click to download", "🔔 Update verfügbar: v{0} — zum Herunterladen klicken", "🔔 Mise à jour disponible : v{0} — cliquez pour télécharger", "🔔 Actualización disponible: v{0} — haga clic para descargar", "🔔 Aggiornamento disponibile: v{0} — clicca per scaricare" },
         ["Ready"] = new[] { "Hazır", "Ready", "Bereit", "Prêt", "Listo", "Pronto" },
         ["Scanning"] = new[] { "Taranıyor…", "Scanning…", "Wird gescannt…", "Analyse…", "Analizando…", "Scansione…" },
         ["SelectNew"] = new[] { "Hedef klasörü seçin", "Select destination folder", "Zielordner wählen", "Choisir le dossier de destination", "Elige la carpeta de destino", "Scegli la cartella di destinazione" },

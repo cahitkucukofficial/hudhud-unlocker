@@ -8,7 +8,7 @@ namespace HudhudUnlocker;
 
 public partial class MainWindow : Window
 {
-    private const string SURUM = "1.0.2";
+    private const string SURUM = "1.0.3";
     private const string SATIN_AL_URL = "https://ahmetrauf.gumroad.com/l/kstgvb";
     private const string SATIN_AL_FIYAT = "$5";
     private const int DENEME_GUN = 30;
@@ -19,6 +19,7 @@ public partial class MainWindow : Window
     private readonly AppSettings _s = AppSettings.Load();
     private string _lang = "en";
     private string _target = "";
+    private string _remoteVer = "";
     private readonly ObservableCollection<LockInfo> _items = new();
 
     public MainWindow()
@@ -67,6 +68,7 @@ public partial class MainWindow : Window
         LblDrop.Text = L("DropHint");
         LblDrop.Visibility = string.IsNullOrEmpty(_target) ? Visibility.Visible : Visibility.Collapsed;
         UpdateLicenseLabel();
+        if (_remoteVer != "") { BtnUpdate.Content = string.Format(L("UpdateAvailable"), _remoteVer); BtnUpdate.Visibility = Visibility.Visible; }
         if (string.IsNullOrEmpty(_target)) LblStatus.Text = L("Ready");
     }
 
@@ -279,6 +281,8 @@ public partial class MainWindow : Window
     }
 
     // ---------- satın alma / deneme / hakkında ----------
+    private void BtnUpdate_Click(object sender, RoutedEventArgs e) => OpenUrl(INDIRME_SAYFASI_URL);
+
     private void BtnBuy_Click(object sender, RoutedEventArgs e) => ShowBuyWindow();
 
     private static void OpenUrl(string url)
@@ -448,11 +452,9 @@ public partial class MainWindow : Window
             var uzak = doc.RootElement.GetProperty("surum").GetString() ?? "";
             if (Version.TryParse(uzak, out var rv) && Version.TryParse(SURUM, out var lv) && rv > lv)
             {
-                LblLicense.Text = LicenseText();
-                var link = new TextBlock { Margin = new Thickness(0, 0, 16, 0) };
-                link.Inlines.Add(MakeLink("⬆ v" + uzak, () => OpenUrl(INDIRME_SAYFASI_URL)));
-                LblStatus.Inlines.Clear();
-                LblStatus.Inlines.Add(MakeLink("⬆ " + uzak + " →", () => OpenUrl(INDIRME_SAYFASI_URL)));
+                _remoteVer = uzak;
+                BtnUpdate.Content = string.Format(L("UpdateAvailable"), uzak);
+                BtnUpdate.Visibility = Visibility.Visible;
             }
         }
         catch { }
