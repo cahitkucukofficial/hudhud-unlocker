@@ -8,7 +8,7 @@ namespace HudhudUnlocker;
 
 public partial class MainWindow : Window
 {
-    private const string SURUM = "1.0.4";
+    private const string SURUM = "1.0.5";
     private const string PRODUCT_ID = "UUoibzNraoBDWbRKFIhPJQ==";
     private const string SATIN_AL_URL = "https://ahmetrauf.gumroad.com/l/kstgvb";
     private const string SATIN_AL_FIYAT = "$5";
@@ -65,7 +65,7 @@ public partial class MainWindow : Window
         BtnScan.Content = L("Scan"); BtnUnlockAll.Content = L("UnlockAll"); BtnKill.Content = L("KillSel");
         BtnDelete.Content = L("Delete"); BtnRename.Content = L("Rename"); BtnMove.Content = L("Move");
         BtnBuy.Content = "💳 " + L("Buy");
-        MenuHelp.Header = L("MenuHelp"); MenuBuy.Header = "💳 " + L("Buy"); MenuAbout.Header = L("About");
+        MenuHelp.Header = L("MenuHelp"); MenuBuy.Header = "💳 " + L("Buy"); MenuAbout.Header = L("About"); MenuCheckUpdate.Header = L("MenuCheckUpdate");
         LblDrop.Text = L("DropHint");
         LblDrop.Visibility = string.IsNullOrEmpty(_target) ? Visibility.Visible : Visibility.Collapsed;
         UpdateLicenseLabel();
@@ -455,7 +455,9 @@ public partial class MainWindow : Window
     }
 
     // ---------- güncelleme denetimi ----------
-    private async Task CheckUpdateAsync()
+    private async void MenuCheckUpdate_Click(object sender, RoutedEventArgs e) => await CheckUpdateAsync(true);
+
+    private async Task CheckUpdateAsync(bool manual = false)
     {
         try
         {
@@ -468,8 +470,15 @@ public partial class MainWindow : Window
                 _remoteVer = uzak;
                 BtnUpdate.Content = string.Format(L("UpdateAvailable"), uzak);
                 BtnUpdate.Visibility = Visibility.Visible;
+                if (manual && System.Windows.MessageBox.Show(string.Format(L("UpdateFound"), uzak), L("Title"), MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                    OpenUrl(INDIRME_SAYFASI_URL);
             }
+            else if (manual)
+                System.Windows.MessageBox.Show(L("UpdateNone"), L("Title"), MessageBoxButton.OK, MessageBoxImage.Information);
         }
-        catch { }
+        catch
+        {
+            if (manual) System.Windows.MessageBox.Show(L("UpdateFail"), L("Title"), MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
     }
 }

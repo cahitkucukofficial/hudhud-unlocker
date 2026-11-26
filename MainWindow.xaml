@@ -16,6 +16,7 @@
         <Menu Grid.Row="0" Background="White">
             <MenuItem x:Name="MenuHelp" Header="Yardım">
                 <MenuItem x:Name="MenuBuy" Click="BtnBuy_Click"/>
+                <MenuItem x:Name="MenuCheckUpdate" Click="MenuCheckUpdate_Click"/>
                 <MenuItem x:Name="MenuAbout" Click="MenuAbout_Click"/>
             </MenuItem>
         </Menu>
