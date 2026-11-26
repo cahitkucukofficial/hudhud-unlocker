@@ -8,8 +8,8 @@ namespace HudhudUnlocker;
 
 public partial class MainWindow : Window
 {
-    private const string SURUM = "1.0.1";
-    private const string SATIN_AL_URL = "https://ahmetrauf.gumroad.com/l/btsbyq";
+    private const string SURUM = "1.0.2";
+    private const string SATIN_AL_URL = "https://ahmetrauf.gumroad.com/l/kstgvb";
     private const string SATIN_AL_FIYAT = "$5";
     private const int DENEME_GUN = 30;
     private const string ADMIN_HASH = "4bf4d546cd281040f63c49996a03d617209d0057c859794fc6320fe853367afd";
