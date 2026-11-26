@@ -8,6 +8,7 @@ public class AppSettings
     public string FirstRunDate { get; set; } = "";
     public string RegName { get; set; } = "";
     public string RegCode { get; set; } = "";
+    public bool RegVerified { get; set; } = false;
 
     private static string FilePath
     {

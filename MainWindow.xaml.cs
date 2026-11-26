@@ -8,7 +8,8 @@ namespace HudhudUnlocker;
 
 public partial class MainWindow : Window
 {
-    private const string SURUM = "1.0.3";
+    private const string SURUM = "1.0.4";
+    private const string PRODUCT_ID = "UUoibzNraoBDWbRKFIhPJQ==";
     private const string SATIN_AL_URL = "https://ahmetrauf.gumroad.com/l/kstgvb";
     private const string SATIN_AL_FIYAT = "$5";
     private const int DENEME_GUN = 30;
@@ -85,7 +86,7 @@ public partial class MainWindow : Window
         Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(s.Trim()))).ToLowerInvariant();
 
     private bool IsAdmin => !string.IsNullOrWhiteSpace(_s.RegCode) && Sha(_s.RegCode) == ADMIN_HASH;
-    private bool IsLicensed => !string.IsNullOrWhiteSpace(_s.RegCode);
+    private bool IsLicensed => !string.IsNullOrWhiteSpace(_s.RegCode) && (IsAdmin || _s.RegVerified);
 
     private int TrialDaysLeft()
     {
@@ -357,12 +358,24 @@ public partial class MainWindow : Window
         sp.Children.Add(new TextBlock { Text = L("RegName") }); sp.Children.Add(ad);
         sp.Children.Add(new TextBlock { Text = L("RegCode") }); sp.Children.Add(kod);
         var kaydet = new System.Windows.Controls.Button { Content = L("RegSave"), Style = (Style)FindResource("Btn"), Margin = new Thickness(0) };
-        kaydet.Click += (_, __) =>
+        kaydet.Click += async (_, __) =>
         {
             if (string.IsNullOrWhiteSpace(kod.Text) || (string.IsNullOrWhiteSpace(ad.Text) && Sha(kod.Text) != ADMIN_HASH))
             { System.Windows.MessageBox.Show(L("RegMissing"), L("RegHeader"), MessageBoxButton.OK, MessageBoxImage.Warning); return; }
-            _s.RegName = ad.Text.Trim(); _s.RegCode = kod.Text.Trim();
-            if (Sha(_s.RegCode) == ADMIN_HASH && string.IsNullOrWhiteSpace(_s.RegName)) _s.RegName = "CAHİT KÜÇÜK";
+            bool admin = Sha(kod.Text) == ADMIN_HASH;
+            if (!admin)
+            {
+                kaydet.IsEnabled = false; var eski = kaydet.Content; kaydet.Content = "…";
+                var sonuc = await LicenseVerifier.VerifyAsync(PRODUCT_ID, kod.Text);
+                kaydet.Content = eski; kaydet.IsEnabled = true;
+                if (sonuc != LicenseVerifier.Result.Valid)
+                {
+                    System.Windows.MessageBox.Show(L(sonuc == LicenseVerifier.Result.NetworkError ? "RegNoNet" : "RegInvalid"), L("RegHeader"), MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+            }
+            _s.RegName = ad.Text.Trim(); _s.RegCode = kod.Text.Trim(); _s.RegVerified = true;
+            if (admin && string.IsNullOrWhiteSpace(_s.RegName)) _s.RegName = "CAHİT KÜÇÜK";
             _s.Save();
             UpdateLicenseLabel();
             System.Windows.MessageBox.Show(string.Format(L("RegThanks"), _s.RegName), L("RegHeader"), MessageBoxButton.OK, MessageBoxImage.Information);

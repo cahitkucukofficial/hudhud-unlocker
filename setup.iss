@@ -1,13 +1,13 @@
 [Setup]
 AppId={{3B7D5E21-6A4C-4F19-9D08-5C1E8A730033}
 AppName=Hudhud Unlocker
-AppVersion=1.0.3
+AppVersion=1.0.4
 AppPublisher=Hudhud Apps
 AppPublisherURL=https://hudhudapps.com
 DefaultDirName={autopf}\Hudhud Unlocker
 DefaultGroupName=Hudhud Unlocker
 OutputDir=installer_output
-OutputBaseFilename=HudhudUnlocker_Setup_v1.0.3
+OutputBaseFilename=HudhudUnlocker_Setup_v1.0.4
 SetupIconFile=app.ico
 UninstallDisplayIcon={app}\HudhudUnlocker.exe
 Compression=lzma2
