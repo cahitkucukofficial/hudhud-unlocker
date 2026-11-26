@@ -1,0 +1,58 @@
+name: Hudhud Unlocker Derle ve Yayimla
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Depoyu al
+        uses: actions/checkout@v4
+
+      - name: .NET 8 SDK kur
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Windows x64 derle
+        run: dotnet publish HudhudUnlocker.csproj -c Release -r win-x64 --self-contained true -o ./publish
+
+      - name: Inno Setup kur ve kurulum dosyasi olustur
+        run: |
+          choco install innosetup -y --no-progress
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" setup.iss
+
+      - name: Tasinabilir (kurulumsuz) ZIP olustur
+        shell: pwsh
+        run: |
+          Compress-Archive -Path publish\* -DestinationPath installer_output\HudhudUnlocker-Portable.zip -Force
+
+      - name: Kurulum Paketini Yukle (Actions artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: HudhudUnlocker-Setup
+          path: installer_output/*.exe
+
+      - name: Tasinabilir Surumu Yukle (Actions artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: HudhudUnlocker-Portable
+          path: installer_output/HudhudUnlocker-Portable.zip
+
+      - name: Kurulum dosyalarini depoya ekle
+        shell: bash
+        run: |
+          mkdir -p indir
+          setup_exe=$(ls installer_output/*.exe | head -n 1)
+          cp "$setup_exe" indir/HudhudUnlocker-Setup.exe
+          cp installer_output/HudhudUnlocker-Portable.zip indir/HudhudUnlocker-Portable.zip
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add indir/HudhudUnlocker-Setup.exe indir/HudhudUnlocker-Portable.zip
+          git diff --cached --quiet && echo "Degisiklik yok" || git commit -m "Kurulum dosyalarini otomatik guncelle [skip ci]"
+          git push || echo "push basarisiz, devam"
